@@ -61,12 +61,12 @@ public static class WebApplicationBuilderExtensions
                 {
                     Version = "v1",
                     Title = $"gma_news_api API - {ti.ToTitleCase(builder.Environment.EnvironmentName)}",
-                    Description = "An example to share an implementation of Minimal API in .NET 6.",
+                    Description = "An example to share an implementation of Minimal API in .NET 8.",
                     Contact = new OpenApiContact
                     {
-                        Name = "gma_news_api API",
-                        Email = "gma_news_api@stphnwlsh.dev",
-                        Url = new Uri("https://github.com/stphnwlsh/gma_news_api")
+                        Name = "GMA News API",
+                        Email = "rian.engracia@gmail.com",
+                        Url = new Uri("https://github.com/riandev25/gma_news_api")
                     },
                     License = new OpenApiLicense
                     {
