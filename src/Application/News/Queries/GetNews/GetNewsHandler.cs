@@ -1,4 +1,4 @@
-namespace gma_news_api.Application.News.Queries.GetNews;
+namespace gma_news_api.Application.News.Queries.GetSportsNews;
 
 using gma_news_api.Application.News.Entities;
 using MediatR;
