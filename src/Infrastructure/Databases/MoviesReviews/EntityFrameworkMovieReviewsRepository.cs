@@ -15,7 +15,9 @@ using ApplicationAuthor = Application.Authors.Entities.Author;
 using ApplicationMovie = Application.Movies.Entities.Movie;
 using ApplicationReview = Application.Reviews.Entities.Review;
 using ApplicationNews = Application.News.Entities.News;
-using gma_news_api.Application.News.Queries.GetNews;
+using gma_news_api.Application.News.Queries.GetSportsNews;
+using gma_news_api.Application.News.Queries.GetNewsSection;
+using gma_news_api.Application.News.Queries.GetSectionNews;
 
 internal class EntityFrameworkMovieReviewsRepository : INewsRepository, IAuthorsRepository, IMoviesRepository, IReviewsRepository
 {
@@ -50,20 +52,36 @@ internal class EntityFrameworkMovieReviewsRepository : INewsRepository, IAuthors
     public virtual async Task<List<ApplicationNews>> GetNews(GetNewsQuery request, CancellationToken cancellationToken)
     {
         IQueryable<News> queryNews = this.context.News;
+        if (request.Section != null && request.Section.Length != 0)
+        {
+            // Filter by multiple sections (sports and scitech)
+            queryNews = queryNews.Where(news => request.Section.Contains(news.Section));
+        }
+        if (request.SubSection != null && request.SubSection.Length != 0)
+        {
+            // Filter by multiple sections (sports and scitech)
+            queryNews = queryNews.Where(news => request.SubSection.Contains(news.SubSection));
+        }
+        var newsResults = await queryNews.Take(100).ToListAsync(cancellationToken);
+        return this.mapper.Map<List<ApplicationNews>>(newsResults);
+    }
 
+    public async Task<List<ApplicationNews>> GetSectionNews(GetSectionNewsQuery request, CancellationToken cancellationToken)
+    {
+        IQueryable<News> queryNews = this.context.News;
         if (!string.IsNullOrEmpty(request.Section))
         {
             queryNews = queryNews.Where(news => news.Section == request.Section);
         }
-
-        if (!string.IsNullOrEmpty(request.SubSection))
+        if (request.SubSection != null && request.SubSection.Length != 0)
         {
-            queryNews = queryNews.Where(news => news.SubSection == request.SubSection);
+            // Filter by multiple sections (sports and scitech)
+            queryNews = queryNews.Where(news => request.SubSection.Contains(news.SubSection));
         }
-
-        var newsResults = await queryNews.Take(10).ToListAsync(cancellationToken);
+        var newsResults = await queryNews.Take(100).ToListAsync(cancellationToken);
         return this.mapper.Map<List<ApplicationNews>>(newsResults);
     }
+
 
     #endregion News
 
