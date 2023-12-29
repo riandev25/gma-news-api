@@ -16,8 +16,9 @@ using ApplicationMovie = Application.Movies.Entities.Movie;
 using ApplicationReview = Application.Reviews.Entities.Review;
 using ApplicationNews = Application.News.Entities.News;
 using gma_news_api.Application.News.Queries.GetSportsNews;
-using gma_news_api.Application.News.Queries.GetNewsSection;
 using gma_news_api.Application.News.Queries.GetSectionNews;
+using System.Linq;
+using System.Linq.Expressions;
 
 internal class EntityFrameworkMovieReviewsRepository : INewsRepository, IAuthorsRepository, IMoviesRepository, IReviewsRepository
 {
@@ -51,34 +52,42 @@ internal class EntityFrameworkMovieReviewsRepository : INewsRepository, IAuthors
 
     public virtual async Task<List<ApplicationNews>> GetNews(GetNewsQuery request, CancellationToken cancellationToken)
     {
-        IQueryable<News> queryNews = this.context.News;
+        IQueryable<News> newsQuery = this.context.News;
         if (request.Section != null && request.Section.Length != 0)
         {
             // Filter by multiple sections (sports and scitech)
-            queryNews = queryNews.Where(news => request.Section.Contains(news.Section));
+            newsQuery = newsQuery.Where(news => request.Section.Contains(news.Section));
         }
         if (request.SubSection != null && request.SubSection.Length != 0)
         {
             // Filter by multiple sections (sports and scitech)
-            queryNews = queryNews.Where(news => request.SubSection.Contains(news.SubSection));
+            newsQuery = newsQuery.Where(news => request.SubSection.Contains(news.SubSection));
         }
-        var newsResults = await queryNews.Take(100).ToListAsync(cancellationToken);
+        var newsResults = await newsQuery.Take(100).ToListAsync(cancellationToken);
         return this.mapper.Map<List<ApplicationNews>>(newsResults);
     }
 
     public async Task<List<ApplicationNews>> GetSectionNews(GetSectionNewsQuery request, CancellationToken cancellationToken)
     {
-        IQueryable<News> queryNews = this.context.News;
+        IQueryable<News> newsQuery = this.context.News;
         if (!string.IsNullOrEmpty(request.Section))
         {
-            queryNews = queryNews.Where(news => news.Section == request.Section);
+            newsQuery = newsQuery.Where(news => news.Section == request.Section);
         }
         if (request.SubSection != null && request.SubSection.Length != 0)
         {
             // Filter by multiple sections (sports and scitech)
-            queryNews = queryNews.Where(news => request.SubSection.Contains(news.SubSection));
+            newsQuery = newsQuery.Where(news => request.SubSection.Contains(news.SubSection));
         }
-        var newsResults = await queryNews.Take(100).ToListAsync(cancellationToken);
+        newsQuery = newsQuery.Skip((request.Page - 1) * request.PageSize).Take(request.PageSize);
+        if (request.SortOrder?.ToLower() == "desc")
+        {
+            newsQuery = newsQuery.OrderByDescending(GetSortNewsProperty(request));
+        } else
+        {
+            newsQuery = newsQuery.OrderBy(GetSortNewsProperty(request));
+        }
+        var newsResults = await newsQuery.ToListAsync(cancellationToken);
         return this.mapper.Map<List<ApplicationNews>>(newsResults);
     }
 
@@ -213,4 +222,19 @@ internal class EntityFrameworkMovieReviewsRepository : INewsRepository, IAuthors
     }
 
     #endregion Reviews
+
+    private static Expression<Func<News, object>> GetSortNewsProperty(GetSectionNewsQuery request)
+    {
+        Expression<Func<News, object>> keySelector = request.SortColumn?.ToLower() switch
+        {
+            "title" => news => news.Title,
+            "newsUrl" => news => news.NewsUrl,
+            "imageUrl" => news => news.ImageUrl,
+            "section" => news => news.Section,
+            "subSection" => news => news.SubSection,
+            "dateTimeUploaded" => news => news.DateTimeUploaded,
+            _ => news => news.Id
+        };
+        return keySelector;
+    }
 }

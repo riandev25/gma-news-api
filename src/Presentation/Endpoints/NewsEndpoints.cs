@@ -90,7 +90,7 @@ public static class NewsEndpoints
     }
 
     public static async Task<IResult> GetNews([FromQuery] string[]? section,
-    [FromQuery] string[]? subSection, IMediator mediator)
+    [FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
         try
         {
@@ -102,55 +102,55 @@ public static class NewsEndpoints
 
         }
     }
-    public static async Task<IResult> GetTopStoriesNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetTopStoriesNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("topstories", subSection, mediator);
+        return await GetSectionNews("topstories", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetMoneyNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetMoneyNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("money", subSection, mediator);
+        return await GetSectionNews("money", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetSportsNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetSportsNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("sports", subSection, mediator);
+        return await GetSectionNews("sports", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetPinoyAbroadNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetPinoyAbroadNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("pinoyabroad", subSection, mediator);
+        return await GetSectionNews("pinoyabroad", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetScitechNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetScitechNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("scitech", subSection, mediator);
+        return await GetSectionNews("scitech", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetShowbizNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetShowbizNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("showbiz", subSection, mediator);
+        return await GetSectionNews("showbiz", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetLifestyleNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetLifestyleNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("lifestyle", subSection, mediator);
+        return await GetSectionNews("lifestyle", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetOpinionNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetOpinionNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("opinion", subSection, mediator);
+        return await GetSectionNews("opinion", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetHashtagNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetHashtagNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("hashtag", subSection, mediator);
+        return await GetSectionNews("hashtag", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetSerbisyoPublikoNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetSerbisyoPublikoNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("serbisyopubliko", subSection, mediator);
+        return await GetSectionNews("serbisyopubliko", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    public static async Task<IResult> GetCbbNews([FromQuery] string[]? subSection, IMediator mediator)
+    public static async Task<IResult> GetCbbNews([FromQuery] string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
-        return await GetSectionNews("cbb", subSection, mediator);
+        return await GetSectionNews("cbb", subSection, page, pageSize, sortColumn, sortOrder, mediator);
     }
-    private static async Task<IResult> GetSectionNews(string section, string[]? subSection, IMediator mediator)
+    private static async Task<IResult> GetSectionNews(string section, string[]? subSection, int page, int pageSize, string? sortColumn, string? sortOrder, IMediator mediator)
     {
         try
         {
-            return Results.Ok(await mediator.Send(new Queries.GetSectionNews.GetSectionNewsQuery(section, subSection)));
+            return Results.Ok(await mediator.Send(new Queries.GetSectionNews.GetSectionNewsQuery(section, subSection, page, pageSize, sortColumn, sortOrder)));
         }
         catch (Exception ex)
         {
