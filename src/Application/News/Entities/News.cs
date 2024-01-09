@@ -1,7 +1,7 @@
-using System;
+namespace gma_news_api.Application.News.Entities;
+
 using System.ComponentModel.DataAnnotations;
 
-namespace gma_news_api.Application.News.Entities;
 public record News
 {
     [Key, Required]
