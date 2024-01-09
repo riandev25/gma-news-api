@@ -10,22 +10,28 @@ FROM ${BASE_IMAGE_REPO}/${BASE_IMAGE_BUILD}:${BASE_IMAGE_BUILD_TAG} AS build
 
 # Build, Test and Publish ARGS
 ARG VERSION_PREFIX=1.0.0.0
-ARG VERSION_SUFFIX
+ARG VERSION_SUFFIX=Docker
 ARG ENVIRONMENT=docker
 
 # Build, Test and Publish ENVS
 ENV DOTNET_ENVIRONMENT=${ENVIRONMENT}
 
+RUN ls
 WORKDIR /sln
 
 # Dotnet Restore
-COPY ./*.sln ./NuGet.config  ./
-COPY src/*/*.csproj ./
+#COPY ./*.sln ./NuGet.config  ./
+COPY ./*.sln ./
+COPY ./src/Application/Application.csproj ./
+COPY ./src/Infrastructure/Infrastructure.csproj ./
+COPY ./src/Presentation/Presentation.csproj ./
+#COPY src/*/*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${file%.*}/; done
 COPY tests/*/*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p tests/${file%.*}/ && mv $file tests/${file%.*}/; done
 
-RUN dotnet restore -v minimal
+RUN for file in $(ls src/**/*.csproj); do dotnet restore $file -v minimal; done
+RUN for file in $(ls tests/**/*.csproj); do dotnet restore $file -v minimal; done
 
 # Bust Cache
 ARG CACHE_BUST 1
@@ -52,6 +58,7 @@ RUN dotnet publish ./src/**/Presentation.csproj --no-restore -c Release -v quiet
 # Runtime Image
 FROM ${BASE_IMAGE_REPO}/${BASE_IMAGE_RUNTIME}:${BASE_IMAGE_RUNTIME_TAG} AS run
 WORKDIR /
-EXPOSE 80
+EXPOSE 8080
+EXPOSE 8081
 COPY --from=publish /sln/app .
 ENTRYPOINT ["dotnet", "Presentation.dll"]
