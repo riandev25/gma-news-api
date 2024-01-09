@@ -6,7 +6,7 @@ using Application.Movies;
 using Application.Movies.Entities;
 using Application.Movies.Queries.GetMovies;
 using NSubstitute;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 
 public class GetMoviesHandlerTests
@@ -35,14 +35,13 @@ public class GetMoviesHandlerTests
 
         // Assert
         _ = await context.Received(1).GetMovies(token);
+        _ = result.Should().NotBeNull();
+        _ = result.Should().BeOfType<List<Movie>>();
 
-        _ = result.ShouldNotBeNull();
-        _ = result.ShouldBeOfType<List<Movie>>();
+        _ = result.Should().NotBeEmpty();
+        _ = result.Count.Should().Be(1);
 
-        result.ShouldNotBeEmpty();
-        result.Count.ShouldBe(1);
-
-        result[0].Id.ShouldBe(Guid.Empty);
-        result[0].Title.ShouldBe("Title");
+        _ = result[0].Id.Should().Be(Guid.Empty);
+        _ = result[0].Title.Should().Be("Title");
     }
 }
