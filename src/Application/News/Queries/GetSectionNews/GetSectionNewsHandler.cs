@@ -1,9 +1,8 @@
-namespace gma_news_api.Application.News.Queries.GetNewsSection;
+namespace gma_news_api.Application.News.Queries.GetSectionNews;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using gma_news_api.Application.News.Entities;
-using gma_news_api.Application.News.Queries.GetSectionNews;
 using MediatR;
 
 public class GetSectionNewsHandler(INewsRepository repository) : IRequestHandler<GetSectionNewsQuery, List<News>>
