@@ -20,33 +20,11 @@ using gma_news_api.Application.News.Queries.GetSectionNews;
 using System.Linq;
 using System.Linq.Expressions;
 
-internal class EntityFrameworkMovieReviewsRepository : INewsRepository, IAuthorsRepository, IMoviesRepository, IReviewsRepository
+internal class EntityFrameworkMovieReviewsRepository(MovieReviewsDbContext context, TimeProvider timeProvider, IMapper mapper) : INewsRepository, IAuthorsRepository, IMoviesRepository, IReviewsRepository
 {
-    private readonly MovieReviewsDbContext context;
-    private readonly TimeProvider timeProvider;
-    private readonly IMapper mapper;
-
-    public EntityFrameworkMovieReviewsRepository(MovieReviewsDbContext context, TimeProvider timeProvider, IMapper mapper)
-    {
-        this.context = context;
-        this.timeProvider = timeProvider;
-        this.mapper = mapper;
-
-        //if (this.context != null)
-        //{
-        //    _ = this.context.Database.EnsureDeleted();
-        //    _ = this.context.Database.EnsureCreated();
-        //    _ = this.context.AddData();
-        //}
-
-        if (this.context != null)
-        {
-            if (this.context.Database.EnsureCreated())
-            {
-                _ = this.context.AddData(); // Only add data if the database was just created
-            }
-        }
-    }
+    private readonly MovieReviewsDbContext context = context;
+    private readonly TimeProvider timeProvider = timeProvider;
+    private readonly IMapper mapper = mapper;
 
     #region News
 
