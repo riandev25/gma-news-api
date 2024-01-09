@@ -14,6 +14,14 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        //var connectionString = Environment.GetEnvironmentVariable("POSTGRES_CONNECTION_STRING");
+        //Console.WriteLine(connectionString);
+
+        // If the environment variable is not set, fallback to the configuration
+        //if (string.IsNullOrEmpty(connectionString))
+        //{
+        //    connectionString = configuration.GetConnectionString("PostgreSqlServer");
+        //}
         var connectionString = configuration.GetConnectionString("PostgreSqlServer");
         _ = services.AddDbContext<MovieReviewsDbContext>(options => options.UseNpgsql(connectionString), ServiceLifetime.Singleton);
 
