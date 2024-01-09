@@ -1,6 +1,7 @@
 version: "3.9"
 services:
     api:
+      image: rianengracia/gma-news-api:v1.0.0
       build:
         context: .
         target: run
@@ -8,10 +9,11 @@ services:
           VERSION_PREFIX: 1.0.0.0
           VERSION_SUFFIX: docker
       ports:
-          - "8080:80"
-          - "8081:443"
+          - "8085:8080"
+          - "8084:8081"
       environment:
         DOTNET_ENVIRONMENT: docker
+        ConnectionStrings__PostgreSqlServer: ${ConnectionStrings__PostgreSqlServer}
       networks:
         - gma_news_api_network
       depends_on:
@@ -19,11 +21,11 @@ services:
     seq:
       image: datalust/seq:latest
       ports:
-        - "5341:80"
+        - "5341:50"
       environment:
         ACCEPT_EULA: Y
       networks:
-        - cleanwebapi_network
+        - gma_news_api_network
 networks:
-  cleanwebapi_network:
+  gma_news_api_network:
     driver: bridge
