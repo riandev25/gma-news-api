@@ -1,6 +1,7 @@
 namespace gma_news_api.Presentation.Tests.Unit.Endpoints;
 
 using System.Threading.Tasks;
+using FluentAssertions;
 using gma_news_api.Application.Common.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -36,9 +37,10 @@ public class MovieEndpointTests
         var response = await MoviesEndpoints.GetMovies(mediator);
 
         // Assert
-        var result = response.ShouldBeOfType<Ok<List<Entities.Movie>>>();
+        var result = response.Should().BeOfType<Ok<List<Entities.Movie>>>().Subject;
 
-        result.StatusCode.ShouldBe(StatusCodes.Status200OK);
+        result.StatusCode.Should().Be(StatusCodes.Status200OK);
+
 
         var value = result.Value.ShouldBeOfType<List<Entities.Movie>>();
 
