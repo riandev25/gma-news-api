@@ -139,7 +139,6 @@ public static class NewsEndpoints
                 SortColumn = sortColumn,
                 SortOrder = sortOrder
             }));
-            //return Results.Ok(await mediator.Send(new Queries.GetSectionNews.GetSectionNewsQuery(section, subSection, page, pageSize, sortColumn, sortOrder)));
         }
         catch (Exception ex)
         {
